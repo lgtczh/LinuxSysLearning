@@ -1,7 +1,7 @@
 .PHONY:clean all
 CC=gcc
 CFLAGS=-Wall -g
-BIN=01errno 02openfile 03openfile 04rdwrfile
+BIN=08statfile
 
 all:$(BIN)
 
