@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
     fprintf(stdout, "Filename : %s\n", argv[1]);    
     
     struct stat sbuf;
-    if (stat(argv[1], &sbuf) == -1){
+    if (lstat(argv[1], &sbuf) == -1){
         ERR_EXIT("stat error");
     }
     
