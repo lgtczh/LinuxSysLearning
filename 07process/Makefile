@@ -1,7 +1,7 @@
 .PHONY:clean all
 CC=gcc
 CFLAGS=-Wall -g
-BIN=13cloexec_fcntl 09hello
+BIN=15system 16mysystem
 
 all:$(BIN)
 
