@@ -10,7 +10,7 @@
 		exit(EXIT_FAILURE); \
 	} while(0)
 
-void printsigset(sigset_t *sigset);
+void printsigset(int index, sigset_t *sigset);
 void handler(int sig);
 
 int main(int argc, char *argvp[])
@@ -25,18 +25,28 @@ int main(int argc, char *argvp[])
 		ERR_EXIT("signal QUIT");
 
 	sigprocmask(SIG_BLOCK, &bset, NULL);
-
-	for (;;){
+	
+	int i;
+	for (i = 0;i < 1000; ++i){
+		printf("In [%d]", getpid());
+		fflush(stdout);
 		sigpending(&pset);
-		printsigset(&pset);
-		sleep(2);
+		printsigset(i, &pset);
+		sleep(1);
+		if (i == 100000){
+			sigset_t uset;
+			sigemptyset(&uset);
+			sigaddset(&uset, SIGINT);
+			sigprocmask(SIG_UNBLOCK, &uset, NULL);
+		}
 	}
 
 	return 0;
 }
 
-void printsigset(sigset_t *sigset)
+void printsigset(int index, sigset_t *sigset)
 {
+	printf("(%d)", index);fflush(stdout);
 	int i;
 	for (i = 1; i < NSIG; ++i){
 		if (sigismember(sigset, i))
@@ -49,6 +59,11 @@ void printsigset(sigset_t *sigset)
 
 void handler(int sig)
 {
+	printf("In [%d handler]", getpid());
+	fflush(stdout);
+	sigset_t hset;
+	sigprocmask(SIG_BLOCK, NULL, &hset);
+	printsigset(9999, &hset);
 	if (sig == SIGINT)
 		printf("recv a sig = %d\n", sig);
 	else if (sig == SIGQUIT){
